@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace ConsoleApplication3
         private static crcms db = new crcms();
         static void Main(string[] args)
         {
-            Exmpl05();
+            Exmpl07();
         }
 
         //Фильтрация
@@ -181,6 +182,94 @@ namespace ConsoleApplication3
             foreach (var item in q)
             {
                 Console.WriteLine(item.Key);
+            }
+        }
+
+        //Методы преобразования
+        //ofType
+        //Cast
+        //ToArray
+        //ToList
+        //ToDictionary
+        //ToLookUp
+        //AsEnumerable
+        //AsQueryable
+
+        public void Exmpl06()
+        {
+            ArrayList classList = new ArrayList();
+            classList.AddRange(new int[] { 3, 4, 5 });
+            classList.AddRange(new string[] { "test", "result"});
+
+            //возбуждает ошибку
+            IEnumerable<int> seq = classList.Cast<int>();
+
+            //не возбуждает ошибку
+            IEnumerable<int> seq2 = classList.OfType<int>();
+
+            Dictionary<string, string> q2 = db.Area.ToDictionary(a => a.IP, a => a.Name);
+            //то что ниже аналог того что на 210 строчке(более длинная версия ниже)
+            Dictionary<string, string> q3 = new Dictionary<string, string>();
+            foreach (Area item in db.Area)
+            {
+                q3.Add(item.IP, item.Name);
+            }
+        }
+
+        //Поэдиментные операции
+        //First
+        //FirstOfDefault
+        //Last
+        //LastOrDefault
+        //Single
+        //SingleOrDefault
+        //ElementAt
+        //ElementAtOrDefault
+        //DefaultIfEmpty
+
+        public static void Exmpl07()
+        {
+            var q1 = db.Area.First(f=>!string.IsNullOrEmpty(f.IP));
+            //var q2 = db.Area.First(f => f.IP == "000");
+            //не выдаст ошибку, если не найдет подходяшую вернет null
+            var q3 = db.Area.FirstOrDefault(f => f.IP == "000");
+            //SingleOrDefault если много одинаковых вернет null, если есть объект в одном экземпляре то вернет его значение
+            //ElementAt вернет третий элемент в массиве
+            var q4 = db.Area.ElementAt(3);
+        }
+
+        //методы агрегирования
+        //Count
+        //longCount
+        //Max, Min
+        //Sum, Average
+
+        //Квантификаторы
+        //Contains
+        //Any
+        //All
+        //Sequence сравнивает последовательности
+        //Equal 
+        public static void Exmpl08()
+        {
+            int[] zone = new[] { 2, 3, 4, 5, 6, 8 };
+            IQueryable<Area> q1 = db.Area.Where(w => zone.Contains(w.AreaId));
+            bool q2 = db.Area.Select(s => s.AreaId).Contains(3);
+
+            bool q3 = db.Document.Any(d => d.CreatedBy == "Gertsen");
+
+            bool q4 = db.Timer.All(a => a.DateFinish != null);
+
+            foreach (string str in Enumerable.Empty<string>())
+            {
+                Console.WriteLine(str);
+            }
+
+            List<int> i = Enumerable.Range(1, 12).ToList();
+            //строки 268 и 270 два варианта одного и того же кода
+            foreach (var month in Enumerable.Range(1,12))
+            {
+                Console.WriteLine(month);
             }
         }
 
